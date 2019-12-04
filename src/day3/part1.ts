@@ -1,8 +1,13 @@
 import * as _ from 'lodash';
 
+type PathVisit = {
+  flag: string;
+  steps: number;
+};
+
 type PathMap = {
   [key: string]: {
-    [key: string]: string,
+    [key: string]: PathVisit,
   },
 };
 
@@ -12,7 +17,7 @@ const goUp = (x: number, y: number) => ([x, y + 1]);
 const goDown = (x: number, y: number) => ([x, y - 1]);
 
 const updateMap = (
-  pathMap: PathMap, startingX: number, startingY: number,
+  pathMap: PathMap, startingX: number, startingY: number, totalSteps: number,
   steps: number, stepFunc: Function, checkFn: Function, flag: string) => {
 
   let x = startingX;
@@ -29,10 +34,15 @@ const updateMap = (
     if (!updatedMap[x.toString()]) {
       updatedMap[x.toString()] = {};
     }
-    if (checkFn(updatedMap[x.toString()][y.toString()])) {
-      coordsToSave.push([x, y]);
+
+    const spotVisiting = updatedMap[x.toString()][y.toString()];
+    if (checkFn(spotVisiting)) {
+      coordsToSave.push([x, y, spotVisiting.steps, totalSteps + i]);
     }
-    updatedMap[x.toString()][y.toString()] = flag;
+
+    if (!spotVisiting || spotVisiting.flag !== flag) {
+      updatedMap[x.toString()][y.toString()] = { flag, steps: totalSteps + i };
+    }
   }
 
   return {
@@ -51,6 +61,7 @@ const executeWire = (
 
   let pathMap = startingMap;
   let coordsToSave: number[][] = [];
+  let totalSteps = 0;
 
   _.forEach(instructions, (instruction: string) => {
     let instructionFunc: Function = goRight;
@@ -70,10 +81,13 @@ const executeWire = (
       instructionFunc = goDown;
     }
 
-    const instructionResult = updateMap(pathMap, x, y, steps, instructionFunc, checkFn, flag);
+    const instructionResult = updateMap(
+      pathMap, x, y, totalSteps,
+      steps, instructionFunc, checkFn, flag);
     pathMap = instructionResult.pathMap;
     x = instructionResult.endingX;
     y = instructionResult.endingY;
+    totalSteps += steps;
     if (!_.isEmpty(instructionResult.coordsToSave)) {
       coordsToSave = _.concat(coordsToSave, instructionResult.coordsToSave);
     }
@@ -87,7 +101,7 @@ const calculateDistanceFromStart = (x: number, y: number): number => Math.abs(x)
 export const findIntersections = (wire1: string[], wire2: string[]) => {
   const wire1Result = executeWire({}, wire1, () => false, 'FIRST');
 
-  const checkFn = (flag?: string) => (flag === 'FIRST');
+  const checkFn = (visit?: { flag: string }) => (visit && visit.flag === 'FIRST');
   const wire2Result = executeWire(wire1Result.pathMap, wire2, checkFn, 'SECOND');
 
   return wire2Result.coordsToSave;
