@@ -19,8 +19,11 @@ const updateMap = (
   let y = startingY;
   const coordsToSave: number[][] = [];
 
-  const updatedMap = _.cloneDeep(pathMap);
-  for (let i = steps; i > 0; i -= 1) {
+  // tslint:disable-next-line: max-line-length
+  // TODO: cloneDeep makes this take forever so I removed it... but that's not following best practices
+  // TODO: look at immutable.js ?
+  const updatedMap = pathMap;
+  for (let i = 1; i <= steps; i += 1) {
     [x, y] = stepFunc(x, y);
 
     if (!updatedMap[x.toString()]) {
@@ -46,7 +49,7 @@ const executeWire = (
   let x = 0;
   let y = 0;
 
-  let pathMap = _.cloneDeep(startingMap);
+  let pathMap = startingMap;
   let coordsToSave: number[][] = [];
 
   _.forEach(instructions, (instruction: string) => {
@@ -81,12 +84,18 @@ const executeWire = (
 
 const calculateDistanceFromStart = (x: number, y: number): number => Math.abs(x) + Math.abs(y);
 
-export const main = (wire1: string[], wire2: string[]) => {
+export const findIntersections = (wire1: string[], wire2: string[]) => {
   const wire1Result = executeWire({}, wire1, () => false, 'FIRST');
 
   const checkFn = (flag?: string) => (flag === 'FIRST');
   const wire2Result = executeWire(wire1Result.pathMap, wire2, checkFn, 'SECOND');
 
-  const distances = _.map(wire2Result.coordsToSave, ([x, y]) => calculateDistanceFromStart(x, y));
+  return wire2Result.coordsToSave;
+};
+
+export const main = (wire1: string[], wire2: string[]): number => {
+  const intersectionCoords = findIntersections(wire1, wire2);
+
+  const distances = _.map(intersectionCoords, ([x, y]) => calculateDistanceFromStart(x, y));
   return _.min(distances) || 0;
 };

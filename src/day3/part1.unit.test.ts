@@ -15,6 +15,6 @@ test('returns 135 given the example inputs', () => {
   expect(main(wire1Instruct, wire2Instruct)).toEqual(135);
 });
 
-// test('returns something given the actual input', () => {
-//   expect(main(wire1, wire2)).toEqual(2180);
-// });
+test('returns something given the actual input', () => {
+  expect(main(wire1, wire2)).toEqual(2180);
+});
