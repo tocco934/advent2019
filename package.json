@@ -1,0 +1,55 @@
+{
+  "name": "advent-of-code",
+  "version": "0.1.0",
+  "description": "manages a request queue and forwards requests to orca",
+  "keywords": [],
+  "author": "lynx squad",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/bluebird": "^3.5.27",
+    "@types/jest": "^24.0.11",
+    "@types/lodash": "^4.14.123",
+    "@types/request-promise": "^4.1.42",
+    "jest": "^24.7.0",
+    "ts-jest": "^24.0.1",
+    "tslint": "^5.11.0",
+    "tslint-config-airbnb": "^5.11.1",
+    "typescript": "^3.3.3333"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.5",
+    "fp-ts": "^2.0.5",
+    "io-ts": "^2.0.0",
+    "io-ts-reporters": "1.0.0",
+    "io-ts-types": "^0.5.0",
+    "js-yaml": "^3.13.0",
+    "lodash": "^4.17.11",
+    "monocle-ts": "^2.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "yarn test:unit",
+    "test:unit": "jest .unit.test.ts --coverage",
+    "lint": "tslint -p tsconfig.json",
+    "prebuild": "yarn lint",
+    "day1": "yarn build && node dist/part1.js",
+    "day2": "yarn build && node dist/part2.js"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "roots": [
+      "src/"
+    ]
+  }
+}
