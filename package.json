@@ -23,7 +23,7 @@
     "io-ts-reporters": "1.0.0",
     "io-ts-types": "^0.5.0",
     "js-yaml": "^3.13.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "monocle-ts": "^2.0.0"
   },
   "scripts": {
